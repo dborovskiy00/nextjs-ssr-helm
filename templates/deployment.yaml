@@ -90,5 +90,5 @@ spec:
     volumes:
       - name: next-cache
         persistentVolumeClaim:
-          claimName: {{ include "app.web.name" . }}-next-cache
+          claimName: {{ include "app.fullname" . }}-web-next-cache
     {{- end }}
