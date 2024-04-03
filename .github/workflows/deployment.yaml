@@ -1,0 +1,34 @@
+name: Deployment
+
+on:
+  repository_dispatch:
+    types: [trigger-workflow]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Update version in YAML file
+        run: |
+          sed -i "/^\( *- name: web\.image\)/!b;n;c\ \ \ \ \ \ \ \ \ \ value: dborovskiy00/nextjs:${{ github.event.client_payload.version }}" ./apps/project-nextjs.yaml
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "${{ github.event.client_payload.version }}"
+          git push
+
+      - name: Create and push tag
+        run: |
+          git tag -a ${{ github.event.client_payload.version }} -m "Version ${{ github.event.client_payload.version }}"
+          git push origin ${{ github.event.client_payload.version }}

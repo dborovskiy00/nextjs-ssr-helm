@@ -1,12 +1,12 @@
-nameOverride: ''
-fullnameOverride: ''
+nameOverride: project-nextjs
+fullnameOverride: project-nextjs
 
 web:
   imagePullPolicy: IfNotPresent
-  imagePullSecrets: '' # must be present in namespace
-  image: ''
+  imagePullSecrets: ''
+  image: dborovskiy00/nextjs:3.0.0
   terminationGracePeriodSeconds: 0
-  replicaCount: 1
+  replicaCount: 2
 
   updateStrategy:
     type: RollingUpdate
@@ -14,45 +14,43 @@ web:
       maxUnavailable: 0
       maxSurge: 1
 
-  # not sure about the usefulness of this - we are trying to solve some caching issues with next.js
-  # so this should be considered experimental.
   cachePersistentVolume:
-    enabled: false # If set to true, a PersistentVolumeClaim (PVC) will be created for caching
-    storageClass: '' # The storage class to use for the PVC. If not set, the default StorageClass will be used
-    existingClaim: '' # If set, this existing PVC will be used instead of creating a new one
+    enabled: false
+    storageClass: nfs-project-app
+    existingClaim: ''
     accessModes:
-      - ReadWriteOnce # The access modes for the PVC. Can be ReadWriteOnce, ReadOnlyMany, or ReadWriteMany. If cachePersistentVolume is enabled and replicaCount is more than 1, this should be set to ReadWriteMany
-    annotations: {} # Annotations to add to the PVC
-    size: 1Gi # The requested storage size for the PVC
-    volumeMode: '' # The volume mode for the PVC. Can be either "Filesystem" (default) or "Block"
-    mountPath: /app/.next/cache # The path to mount the volume in the container
+      - ReadWriteOnce
+    annotations: {}
+    size: 1Gi
+    volumeMode: ''
+    mountPath: /app/.next/cache
 
   hpa:
     enabled: false
     maxReplicas: 10
-    # average total CPU usage per pod (1-100)
     cpu:
-    # average memory usage per pod (100Mi-1Gi)
     memory:
-    # average http requests per second per pod (k8s-prometheus-adapter)
     requests:
 
   ingress:
-    enabled: false
+    enabled: true
     ingressClassName: nginx
     annotations: {}
-    hosts: []
+    hosts:
+      - host: project.k8s-3.sa
+        http:
+          paths:
+            - path: /
     tls: []
 
   service:
     enabled: true
     type: ClusterIP
     port: 3000
-    # nodePort: 31198
     annotations: {}
 
   livenessProbe:
-    enabled: false
+    enabled: true
     httpGet:
       endpoint: /api/hc?source=livenessProbe
       httpHeaders: []
@@ -92,18 +90,9 @@ web:
   #   - name: AIRBROKE_OPENAI_API_KEY
   #     value: "sk-xxxxxxx"
 
-  ## Pod Disruption Budget
-  ## https://kubernetes.io/docs/tasks/run-application/configure-pdb/
-  ##
   podDisruptionBudget:
-    ## if a PodDisruptionBudget resource is created for the pgbouncer Deployment
-    ##
     enabled: false
 
-    ## the maximum unavailable pods/percentage for the pgbouncer Deployment
-    ##
     maxUnavailable:
 
-    ## the minimum available pods/percentage for the pgbouncer Deployment
-    ##
     minAvailable:
