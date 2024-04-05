@@ -4,7 +4,7 @@ fullnameOverride: project-nextjs
 web:
   imagePullPolicy: IfNotPresent
   imagePullSecrets: ''
-  image: dborovskiy00/nextjs:3.0.0
+  image: dborovskiy00/nextjs:4.0.1
   terminationGracePeriodSeconds: 0
   replicaCount: 2
 
