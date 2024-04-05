@@ -3,7 +3,17 @@ entries:
   nextjs-ssr-helm:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-04-05T18:13:01.836517382Z"
+    created: "2024-04-05T18:19:27.717364105Z"
+    description: A Helm chart for Kubernetes
+    digest: dfaa143f25a4f36dc18809a1887ea21a0e6b73e06e8db3a79646d329cacb45d8
+    name: nextjs-ssr-helm
+    type: application
+    urls:
+    - https://dborovskiy00.github.io/nextjs-ssr-helm/releases/nextjs-ssr-helm-0.8.0.tgz
+    version: 0.8.0
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2024-04-05T18:19:27.693004464Z"
     description: A Helm chart for Kubernetes
     digest: 59b466d63fbe5ff38761d257cac31ab6686ea5dafdc590e04a7f75914412b94e
     name: nextjs-ssr-helm
@@ -13,7 +23,7 @@ entries:
     version: 0.7.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-04-05T18:13:01.822369831Z"
+    created: "2024-04-05T18:19:27.675023456Z"
     description: A Helm chart for Kubernetes
     digest: c57c2ca4ff46499df8175c6e07273f374fbd1e74024984499f012a768b5616c8
     name: nextjs-ssr-helm
@@ -23,7 +33,7 @@ entries:
     version: 0.6.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-04-05T18:13:01.81525861Z"
+    created: "2024-04-05T18:19:27.667768007Z"
     description: A Helm chart for Kubernetes
     digest: 2d4dd3e5d6ac4d9697867caabddb9a50ee00a2a4e0bbf2c15f5d727338e3f548
     name: nextjs-ssr-helm
@@ -33,7 +43,7 @@ entries:
     version: 0.5.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-04-05T18:13:01.809266907Z"
+    created: "2024-04-05T18:19:27.661804014Z"
     description: A Helm chart for Kubernetes
     digest: 73c32a8089eb9fa7878bd748be24e11388c8becb2e3e73f797b5c856749dcab8
     name: nextjs-ssr-helm
@@ -43,7 +53,7 @@ entries:
     version: 0.4.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-04-05T18:13:01.8064673Z"
+    created: "2024-04-05T18:19:27.658971479Z"
     description: A Helm chart for Kubernetes
     digest: 087b7ea181beb809e6490384253b69a5f272afa6b4283495bba79f598a22178f
     name: nextjs-ssr-helm
@@ -53,7 +63,7 @@ entries:
     version: 0.3.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-04-05T18:13:01.803554878Z"
+    created: "2024-04-05T18:19:27.656080597Z"
     description: A Helm chart for Kubernetes
     digest: 1c9b258e2b01bb5f17966aaae9fc12d8a9ec8e629a1146d099c15667e244c5c1
     name: nextjs-ssr-helm
@@ -63,7 +73,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2024-04-05T18:13:01.801786941Z"
+    created: "2024-04-05T18:19:27.654293534Z"
     description: A Helm chart for Kubernetes
     digest: 750098e7e9e815ef1a96fc05ef279bef104c86bda9045ffe7c05e6552bac80f8
     name: nextjs-ssr-helm
@@ -71,4 +81,4 @@ entries:
     urls:
     - https://dborovskiy00.github.io/nextjs-ssr-helm/releases/nextjs-ssr-helm-0.1.0.tgz
     version: 0.1.0
-generated: "2024-04-05T18:13:01.800448432Z"
+generated: "2024-04-05T18:19:27.65290217Z"
