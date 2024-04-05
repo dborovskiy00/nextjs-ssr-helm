@@ -25,7 +25,7 @@ jobs:
 
       - name: Update Chart version
         run: |
-          sed -i 's|version: .*|version: {{ github.event.client_payload.version }}|g' Chart.yaml
+          sed -i 's|version: .*|version: ${{ github.event.client_payload.version }}|g' Chart.yaml
 
       - name: Package version
         run: |
