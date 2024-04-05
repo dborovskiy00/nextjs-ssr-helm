@@ -23,9 +23,9 @@ jobs:
         run: |
           sed -i 's|image: dborovskiy00/nextjs:.*|image: dborovskiy00/nextjs:${{ github.event.client_payload.version }}|g' values.yaml
 
-      - name: Update image version
+      - name: Update Chart version
         run: |
-          sed -i 's|version:.*|image: version:${{ github.event.client_payload.version }}|g' Chart.yaml    
+          sed -i 's|version: .*|version: {{ github.event.client_payload.version }}|g' Chart.yaml
 
       - name: Package version
         run: |
