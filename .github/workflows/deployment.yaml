@@ -16,9 +16,19 @@ jobs:
         with:
           ref: main
 
-      - name: Update version in YAML file
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+
+      - name: Update image version
         run: |
-          sed -i "/^\( *- name: web\.image\)/!b;n;c\ \ \ \ \ \ \ \ \ \ value: dborovskiy00/nextjs:${{ github.event.client_payload.version }}" ./apps/project-nextjs.yaml
+          sed -i 's|image: dborovskiy00/nextjs:.*|image: dborovskiy00/nextjs:${{ github.event.client_payload.version }}|g' values.yaml
+
+      - name: Package version
+        run: |
+          cd ./releases
+          helm package ../
+          helm repo index --url https://dborovskiy00.github.io/nextjs-ssr-helm/ ../
+          cd ..  
 
       - name: Commit changes
         run: |
