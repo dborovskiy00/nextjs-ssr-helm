@@ -30,7 +30,7 @@ spec:
     - host: {{ .host | quote }}
       http:
         paths:
-        {{- range .http.paths }}
+        {{- range .paths }}
           - path: {{ . }}
             pathType: Prefix
             backend:

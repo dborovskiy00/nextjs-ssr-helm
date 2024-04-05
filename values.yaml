@@ -38,9 +38,8 @@ web:
     annotations: {}
     hosts:
       - host: project.k8s-3.sa
-        http:
-          paths:
-            - path: /
+        paths:
+          - path: /
     tls: []
 
   service:
