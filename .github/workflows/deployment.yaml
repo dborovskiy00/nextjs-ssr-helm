@@ -1,0 +1,95 @@
+name: Deployment
+
+on:
+  repository_dispatch:
+    types: [trigger-workflow]
+
+jobs:
+  update-version:
+    name: Update Version and Tag
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v1
+
+      - name: Update image version
+        run: |
+          sed -i 's|image: dborovskiy00/nextjs:.*|image: dborovskiy00/nextjs:${{ github.event.client_payload.version }}|g' ./sources/values.yaml
+
+      - name: Update Chart version
+        run: |
+          sed -i 's|version: .*|version: ${{ github.event.client_payload.version }}|g' ./sources/Chart.yaml
+
+      - name: Package version
+        run: |
+          cd ./releases
+          helm package ../sources
+          helm repo index --url https://dborovskiy00.github.io/nextjs-ssr-helm/ ../
+          cd ..
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "${{ github.event.client_payload.version }}"
+          git push
+
+      - name: Create and push tag
+        run: |
+          git tag -a ${{ github.event.client_payload.version }} -m "Version ${{ github.event.client_payload.version }}"
+          git push origin ${{ github.event.client_payload.version }}
+
+      - name: Notify status to Slack
+        uses: ravsamhq/notify-slack-action@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notification_title: "Helm update version (${{ github.event.client_payload.version }})"
+          message_format: "{emoji} *{job}* {status_message} in <{repo_url}|{repo}>"
+          footer: "Linked Repo <{repo_url}|{repo}>"
+          notify_when: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  sync-argocd-workflow:
+    name: Sync ArgoCD workflow
+    needs: update-version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Trigger workflow in Argocd Repository
+        run: |
+          repo_owner="${{ secrets.OWNER }}"
+          event_type="trigger-workflow"
+          version="${{ github.event.client_payload.version }}"
+
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/dborovskiy00/${{ secrets.ARGO_REPO_NAME }}/dispatches \
+            -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"version\": \"$version\", \"unit\": false, \"integration\": true}}"    
+
+      - name: Notify status to Slack
+        uses: ravsamhq/notify-slack-action@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notification_title: "Helm Sync ArgoCD repo (${{ github.event.client_payload.version }})"
+          message_format: "{emoji} *{job}* {status_message} in <{repo_url}|{repo}>"
+          footer: "Linked Repo <{repo_url}|{repo}>"
+          notify_when: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
