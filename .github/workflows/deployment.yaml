@@ -53,7 +53,7 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          notification_title: "Helm update version (${{ github.event.client_payload.version }}) - {status_message}"
+          notification_title: "Helm update version (${{ github.event.client_payload.version }})"
           message_format: "{emoji} *{job}* {status_message} in <{repo_url}|{repo}>"
           footer: "Linked Repo <{repo_url}|{repo}>"
           notify_when: ${{ job.status }}
@@ -87,7 +87,7 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          notification_title: "Helm Sync ArgoCD repo - {status_message}"
+          notification_title: "Helm Sync ArgoCD repo (${{ github.event.client_payload.version }})"
           message_format: "{emoji} *{job}* {status_message} in <{repo_url}|{repo}>"
           footer: "Linked Repo <{repo_url}|{repo}>"
           notify_when: ${{ job.status }}
