@@ -5,7 +5,7 @@ on:
     types: [trigger-workflow]
 
 jobs:
-  build:
+  update-version:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -47,6 +47,24 @@ jobs:
           git tag -a ${{ github.event.client_payload.version }} -m "Version ${{ github.event.client_payload.version }}"
           git push origin ${{ github.event.client_payload.version }}
 
+      - name: Notify status to Slack
+        uses: ravsamhq/notify-slack-action@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notification_title: "Helm update version (${{ github.event.client_payload.version }}) - {status_message}"
+          message_format: "{emoji} *{job}* {status_message} in <{repo_url}|{repo}>"
+          footer: "Linked Repo <{repo_url}|{repo}>"
+          notify_when: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
       - name: Trigger deployment in Argocd Repository
         run: |
           repo_owner="${{ secrets.OWNER }}"
@@ -59,4 +77,16 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.PAT }}" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/dborovskiy00/${{ secrets.ARGO_REPO_NAME }}/dispatches \
-            -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"version\": \"$version\", \"unit\": false, \"integration\": true}}"        
+            -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"version\": \"$version\", \"unit\": false, \"integration\": true}}"    
+
+      - name: Notify status to Slack
+        uses: ravsamhq/notify-slack-action@v2
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notification_title: "Helm Sync ArgoCD repo - {status_message}"
+          message_format: "{emoji} *{job}* {status_message} in <{repo_url}|{repo}>"
+          footer: "Linked Repo <{repo_url}|{repo}>"
+          notify_when: ${{ job.status }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
