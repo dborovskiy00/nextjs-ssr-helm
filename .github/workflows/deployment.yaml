@@ -30,9 +30,9 @@ jobs:
       - name: Package version
         run: |
           cd ./releases
-          helm package ../
+          helm package ../sources
           helm repo index --url https://dborovskiy00.github.io/nextjs-ssr-helm/ ../
-          cd ..  
+          cd ..
 
       - name: Commit changes
         run: |
