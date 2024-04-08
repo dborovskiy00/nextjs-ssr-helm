@@ -6,6 +6,7 @@ on:
 
 jobs:
   update-version:
+    name: Update Version and Tag
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -21,11 +22,11 @@ jobs:
 
       - name: Update image version
         run: |
-          sed -i 's|image: dborovskiy00/nextjs:.*|image: dborovskiy00/nextjs:${{ github.event.client_payload.version }}|g' values.yaml
+          sed -i 's|image: dborovskiy00/nextjs:.*|image: dborovskiy00/nextjs:${{ github.event.client_payload.version }}|g' ./sources/values.yaml
 
       - name: Update Chart version
         run: |
-          sed -i 's|version: .*|version: ${{ github.event.client_payload.version }}|g' Chart.yaml
+          sed -i 's|version: .*|version: ${{ github.event.client_payload.version }}|g' ./sourcesChart.yaml
 
       - name: Package version
         run: |
@@ -59,13 +60,15 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  build:
+  sync-argocd-workflow:
+    name: Sync ArgoCD workflow
+    needs: update-version
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-      - name: Trigger deployment in Argocd Repository
+      - name: Trigger workflow in Argocd Repository
         run: |
           repo_owner="${{ secrets.OWNER }}"
           event_type="trigger-workflow"
